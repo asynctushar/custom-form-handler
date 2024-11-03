@@ -21,10 +21,73 @@ const initialValues: FormValues = {
 	mobile: "",
 };
 
+// Custom validation schema
+const validationSchema = {
+	name: {
+		validate: (value: string) => {
+			if (!value) return "Name is required";
+			if (value.trim().length < 3) return "Name must be at least 3 characters long";
+
+
+			return undefined;
+		},
+	},
+	email: {
+		validate: (value: string) => {
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if (!value) return "Email is required";
+			if (!emailRegex.test(value)) return "Invalid email format";
+
+			return undefined;
+		},
+	},
+	password: {
+		validate: (value: string) => {
+			if (!value) return "Password is required";
+			if (value.length < 6) return "Password must be at least 6 characters";
+
+			return undefined;
+		},
+	},
+	selectOption: {
+		validate: (value: string) => {
+			if (!value) return "Please select an option";
+
+			return undefined;
+		},
+	},
+	sex: {
+		validate: (value: string) => {
+			if (!value) return "Sex field is required";
+
+			return undefined;
+		},
+	},
+	age: {
+		validate: (value: string) => {
+			const age = Number(value);
+			if (!value) return "Age is required";
+			if (isNaN(age) || age <= 0) return "Age must be a positive number";
+
+			return undefined;
+		},
+	},
+	mobile: {
+		validate: (value: string) => {
+			const mobileRegex = /^[0-9]{11}$/;
+			if (!value) return "Mobile number is required";
+			if (!mobileRegex.test(value)) return "Mobile number must be 11 digits";
+
+			return undefined;
+		},
+	},
+};
+
 const Form = () => {
-	const { values, handleChange, handleSubmit } = useForm<FormValues>({
+	const { values, handleChange, handleSubmit, errors } = useForm<FormValues>({
 		initialValues,
-		onSubmit: (values: FormValues) => {
+		validationSchema,
+		onSubmit: (values) => {
 			console.log(values);
 		},
 	});
@@ -39,6 +102,8 @@ const Form = () => {
 				value={values.name}
 				onChange={handleChange}
 			/>
+			{errors.name && <span className={styles.error}>{errors.name}</span>}
+
 			<input
 				type="email"
 				name="email"
@@ -47,6 +112,8 @@ const Form = () => {
 				value={values.email}
 				onChange={handleChange}
 			/>
+			{errors.email && <span className={styles.error}>{errors.email}</span>}
+
 			<input
 				type="password"
 				name="password"
@@ -55,6 +122,8 @@ const Form = () => {
 				value={values.password}
 				onChange={handleChange}
 			/>
+			{errors.password && <span className={styles.error}>{errors.password}</span>}
+
 			<select
 				name="selectOption"
 				value={values.selectOption}
@@ -65,6 +134,8 @@ const Form = () => {
 				<option value="A">Option A</option>
 				<option value="B">Option B</option>
 			</select>
+			{errors.selectOption && <span className={styles.error}>{errors.selectOption}</span>}
+
 			<div className={styles.radioGroup}>
 				<label>
 					<input
@@ -89,6 +160,8 @@ const Form = () => {
 					Female
 				</label>
 			</div>
+			{errors.sex && <span className={styles.error}>{errors.sex}</span>}
+
 			<input
 				type="number"
 				name="age"
@@ -97,6 +170,8 @@ const Form = () => {
 				value={values.age}
 				onChange={handleChange}
 			/>
+			{errors.age && <span className={styles.error}>{errors.age}</span>}
+
 			<input
 				type="tel"
 				name="mobile"
@@ -105,6 +180,8 @@ const Form = () => {
 				value={values.mobile}
 				onChange={handleChange}
 			/>
+			{errors.mobile && <span className={styles.error}>{errors.mobile}</span>}
+
 			<button className={styles.button}>Submit</button>
 		</form>
 	);
